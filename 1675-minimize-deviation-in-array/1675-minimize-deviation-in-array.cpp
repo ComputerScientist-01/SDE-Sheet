@@ -1,37 +1,19 @@
 class Solution {
 public:
     int minimumDeviation(vector<int>& nums) {
-        set <int>  s;
-        
-        // Storing all  elements  in sorted order
-        //insert even directly and odd with one time multiplication
-        //and it will become even
-        for(int i = 0; i<nums.size() ; ++i)
-        {
-            if(nums[i] % 2 == 0)
-                s.insert(nums[i]);
-            
-            else
-                // Odd number are transformed
-                // using 2nd operation
-                s.insert(nums[i] * 2);
+        int res = INT_MAX,min_n = INT_MAX;
+        priority_queue<int> pq;
+        for(auto n:nums){
+            n = (n%2)?n*2:n;
+            pq.push(n);
+            min_n = min(n,min_n);
         }
-        
-        // maximum - minimun
-        int diff = *s.rbegin() - *s.begin();
-        
-        //run the loop untill difference is minimized
-        while(*s.rbegin() % 2 == 0)
-        {
-            
-            // Maximum element of the set
-            int x = *s.rbegin();
-            s.erase(x);
-            // remove begin element and inserted half of it for minimizing
-            s.insert(x/2);
-            
-            diff = min(diff, *s.rbegin() - *s.begin());
+        while(pq.top()%2 == 0){
+            res = min(res,pq.top() - min_n);
+            min_n = min(min_n,pq.top()/2);
+            pq.push(pq.top()/2);
+            pq.pop();
         }
-        return diff;
+        return min(res,pq.top()-min_n);
     }
 };
